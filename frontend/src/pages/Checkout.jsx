@@ -17,8 +17,7 @@ const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // ១. ទទួលទិន្នន័យមេរៀនពីមេរៀនដែលបានចុច (selectedCourse)
-  // ប្រសិនបើគ្មានទិន្នន័យ វានឹងប្រើតម្លៃ Default ការពារការ Error ផ្ទាំងស
+  // ១. ទទួលទិន្នន័យមេរៀន
   const course = location.state?.selectedCourse || { 
     title: "មេរៀនពិសេស", 
     price: 0.01 
@@ -26,35 +25,31 @@ const Checkout = () => {
   
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // States សម្រាប់គ្រប់គ្រងការបង់ប្រាក់
+  // States
   const [qrString, setQrString] = useState("");
   const [paymentHash, setPaymentHash] = useState("");
   const [loading, setLoading] = useState(true);
   const [isPaid, setIsPaid] = useState(false);
   const [error, setError] = useState(null);
 
-  const BACKEND_URL = "http://127.0.0.1:8000";
+  // ប្ដូរទៅកាន់ Link Render របស់អ្នក
+  const BACKEND_URL = "https://ak-digital-hub.onrender.com";
 
-  // ២. ការពារ៖ បើចូលមកដល់ទំព័រនេះដោយគ្មានមេរៀន ឱ្យត្រឡប់ទៅទំព័រ Courses វិញ
-  useEffect(() => {
-    if (!location.state?.selectedCourse) {
-      console.warn("No course selected, redirecting...");
-      // navigate('/courses'); // បើកបន្ទាត់នេះ បើអ្នកចង់ឱ្យវាដេញចេញពេលបាត់ Data
-    }
-  }, [location.state, navigate]);
-
-  // ៣. ទាញយក QR Code ពី Backend តាមរយៈតម្លៃ Price នៃមេរៀន
+  // ២. ទាញយក QR Code ពី Render Backend
   useEffect(() => {
     const fetchQR = async () => {
       try {
         setLoading(true);
-        // បញ្ជូនតម្លៃ course.price ទៅកាន់ Backend
-        const res = await fetch(`${BACKEND_URL}/generate-qr?amount=${course.price}`);
+        setError(null);
+        
+        // ហៅទៅកាន់ Endpoint /api/generate-qr
+        const res = await fetch(`${BACKEND_URL}/api/generate-qr?amount=${course.price}`);
+        
         if (!res.ok) throw new Error("មិនអាចបង្កើត QR បានទេ");
         
         const data = await res.json();
-        setQrString(data.qr_string);
-        setPaymentHash(data.md5);
+        setQrString(data.qr_string); // នេះគឺជា string វែងៗរបស់ Bakong
+        setPaymentHash(data.md5);    // ប្រើសម្រាប់ឆែកស្ថានភាពបង់ប្រាក់
       } catch (err) {
         setError("មានបញ្ហាក្នុងការភ្ជាប់ទៅកាន់ Server");
         console.error("Fetch QR Error:", err);
@@ -66,18 +61,19 @@ const Checkout = () => {
     if (course.price) {
       fetchQR();
     }
-  }, [course.price]);
+  }, [course.price, BACKEND_URL]);
 
-  // ៤. ឆែកស្ថានភាពបង់ប្រាក់រាល់ ៥ វិនាទីម្តង (Polling)
+  // ៣. ឆែកស្ថានភាពបង់ប្រាក់ (Polling) រាល់ ៥ វិនាទីម្ដង
   useEffect(() => {
     if (!paymentHash || isPaid) return;
 
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/check-status/${paymentHash}`);
+        const res = await fetch(`${BACKEND_URL}/api/check-status/${paymentHash}`);
         const data = await res.json();
         
-        if (data.status === "PAID") {
+        // ប្រសិនបើ Backend បោះមកថា "PAID" ឬ status ជោគជ័យ
+        if (data.status === "PAID" || data.status?.responseCode === "000") {
           clearInterval(interval);
           handlePaymentSuccess();
         }
@@ -87,23 +83,23 @@ const Checkout = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [paymentHash, isPaid]);
+  }, [paymentHash, isPaid, BACKEND_URL]);
 
-  // ៥. Logic នៅពេលបង់លុយជោគជ័យ
+  // ៤. Logic នៅពេលបង់លុយជោគជ័យ
   const handlePaymentSuccess = async () => {
     try {
-      // ក. Update ទៅ Google Sheet ឬ Database តាមរយៈ Backend
-      await fetch(`${BACKEND_URL}/update-payment`, {
+      // បញ្ជូនទិន្នន័យទៅ Update ក្នុង Google Sheet តាមរយៈ Backend
+      await fetch(`${BACKEND_URL}/api/update-payment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: user?.username || "Unknown User",
+          username: user?.username || "Unknown",
           course_name: course.title,
           amount: course.price
         })
       });
 
-      // ខ. Update LocalStorage ដើម្បីឱ្យ Profile ទាញទិន្នន័យបានភ្លាមៗ
+      // Update ព័ត៌មានក្នុងម៉ាស៊ីនសិស្ស (LocalStorage)
       const updatedUser = { 
         ...user, 
         payment: 'Paid', 
@@ -114,111 +110,95 @@ const Checkout = () => {
       setIsPaid(true);
     } catch (err) {
       console.error("Update Payment Error:", err);
-      setIsPaid(true); // បង្ហាញ Success ទោះ Backend Error បន្តិចបន្តួច
+      setIsPaid(true); 
     }
   };
 
-  // --- ផ្នែក UI: នៅពេលបង់ប្រាក់រួចរាល់ ---
+  // --- UI: បង់ប្រាក់ជោគជ័យ ---
   if (isPaid) {
     return (
-      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6 font-khmer">
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6 font-khmer">
         <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className="max-w-md w-full bg-white rounded-[2.5rem] p-10 text-center shadow-2xl relative overflow-hidden"
         >
-          <div className="absolute top-0 left-0 w-full h-2 bg-green-500" />
-          <motion.div 
-            animate={{ y: [0, -10, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-500"
-          >
-            <CheckCircle2 size={40} />
-          </motion.div>
-
-          <h2 className="text-2xl font-black text-slate-900 mb-2">បង់ប្រាក់ជោគជ័យ!</h2>
-          <p className="text-slate-500 mb-8 font-medium">មេរៀនរបស់អ្នកត្រូវបានបើកជូនឥឡូវនេះ</p>
-
-          <div className="bg-slate-50 rounded-2xl p-5 mb-8 border border-slate-100 text-left">
-            <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase mb-1">
-              <BookOpen size={14} /> Course Enrolled
-            </div>
-            <div className="text-lg font-bold text-slate-800 leading-tight">{course.title}</div>
+          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-500">
+            <CheckCircle2 size={48} />
           </div>
-
+          <h2 className="text-3xl font-black text-slate-900 mb-2">ជោគជ័យ!</h2>
+          <p className="text-slate-500 mb-8">ការបង់ប្រាក់ត្រូវបានបញ្ជាក់រួចរាល់។</p>
+          
           <button 
             onClick={() => navigate('/profile')}
-            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95"
+            className="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all"
           >
-            ចូលទៅកាន់មេរៀន <ArrowRight size={20} />
+            ចូលរៀនឥឡូវនេះ <ArrowRight size={20} />
           </button>
-          <PartyPopper className="absolute -bottom-6 -right-6 text-slate-100 w-32 h-32 opacity-20" />
+          <PartyPopper className="absolute -bottom-4 -left-4 text-slate-100 w-24 h-24 opacity-20" />
         </motion.div>
       </div>
     );
   }
 
-  // --- ផ្នែក UI: បង្ហាញ QR Code សម្រាប់ស្កេន ---
+  // --- UI: ទំព័រស្កេន QR Code ---
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center p-6 font-khmer">
+    <div className="min-h-screen bg-[#020617] text-white flex items-center justify-center p-6 font-khmer">
       <div className="max-w-md w-full">
-        <div className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-slate-700 shadow-2xl text-center">
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-[3rem] p-8 border border-slate-800 shadow-2xl text-center">
           
-          <div className="flex items-center justify-center gap-2 mb-6 text-amber-500 bg-amber-500/10 py-1.5 px-4 rounded-full w-fit mx-auto border border-amber-500/20">
-            <ShieldCheck size={16} />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Secure Payment</span>
+          <div className="inline-flex items-center gap-2 text-amber-500 bg-amber-500/10 py-2 px-5 rounded-full mb-8 border border-amber-500/20 text-xs font-bold uppercase tracking-widest">
+            <ShieldCheck size={14} /> Secure KHQR Payment
           </div>
 
-          <h2 className="text-xl font-bold mb-1 uppercase tracking-tight">Scan to Pay</h2>
-          <p className="text-slate-400 text-sm mb-8 line-clamp-1">{course.title}</p>
+          <h2 className="text-2xl font-black mb-1 uppercase">Scan to Pay</h2>
+          <p className="text-slate-400 text-sm mb-10">{course.title}</p>
 
-          {/* QR Code Container */}
-          <div className="bg-white p-5 rounded-[2rem] inline-block shadow-inner mb-6 relative group">
+          {/* QR Code Section */}
+          <div className="bg-white p-6 rounded-[2.5rem] inline-block mb-10 shadow-2xl">
             {loading ? (
-              <div className="w-60 h-60 flex flex-col items-center justify-center text-slate-900 gap-3">
-                <Loader2 className="animate-spin text-amber-500" size={35} />
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Generating QR...</p>
+              <div className="w-60 h-60 flex flex-col items-center justify-center text-slate-900 gap-4">
+                <Loader2 className="animate-spin text-amber-500" size={40} />
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Generating Secure QR...</span>
               </div>
             ) : error ? (
-              <div className="w-60 h-60 flex flex-col items-center justify-center text-red-500 gap-2 p-4">
-                <AlertCircle size={30} />
+              <div className="w-60 h-60 flex flex-col items-center justify-center text-red-500 p-6">
+                <AlertCircle size={40} className="mb-2" />
                 <p className="text-xs font-bold">{error}</p>
-                <button onClick={() => window.location.reload()} className="text-[10px] underline mt-2 text-slate-400">ព្យាយាមម្ដងទៀត</button>
+                <button onClick={() => window.location.reload()} className="mt-4 text-[10px] text-slate-400 underline">ព្យាយាមម្ដងទៀត</button>
               </div>
             ) : (
               <motion.img 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrString)}`} 
-                alt="KHQR Code" 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                // បំប្លែង qrString ទៅជារូបភាព QR Code តាមរយៈ api.qrserver.com
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrString)}`} 
+                alt="Bakong KHQR" 
                 className="w-60 h-60"
               />
             )}
           </div>
 
-          {/* Price Tag */}
-          <div className="flex items-center justify-between bg-slate-900/40 p-5 rounded-2xl border border-slate-700 mb-6">
+          {/* Amount Box */}
+          <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 flex items-center justify-between mb-8">
             <div className="text-left">
-              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Total Amount</p>
-              <p className="text-2xl font-black text-amber-500">
-                ${course.price ? course.price.toFixed(2) : "0.00"}
-              </p>
+              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">ទឹកប្រាក់ត្រូវបង់</p>
+              <p className="text-3xl font-black text-white">${course.price?.toFixed(2)}</p>
             </div>
-            <img src="https://bakong.nbc.gov.kh/img/khqr-logo.png" alt="KHQR" className="h-7" />
+            <img src="https://bakong.nbc.gov.kh/img/khqr-logo.png" alt="KHQR" className="h-8" />
           </div>
 
-          {/* Polling Indicator */}
-          <div className="flex items-center justify-center gap-3 text-slate-400">
-            <Loader2 className="animate-spin text-slate-500" size={14} />
-            <p className="text-[11px] tracking-wide italic">កំពុងរង់ចាំការបញ្ជាក់ពីធនាគារ...</p>
+          <div className="flex items-center justify-center gap-3 text-slate-500 animate-pulse">
+            <Loader2 size={14} className="animate-spin" />
+            <span className="text-xs">រង់ចាំការបញ្ជាក់ដោយស្វ័យប្រវត្តិ...</span>
           </div>
         </div>
 
         <button 
           onClick={() => navigate(-1)}
-          className="w-full mt-6 text-slate-500 hover:text-white text-xs transition-colors font-medium"
+          className="w-full mt-8 text-slate-500 hover:text-white text-sm transition-all"
         >
-          បោះបង់ការបង់ប្រាក់ និងត្រឡប់ក្រោយ
+          បោះបង់ និងត្រឡប់ក្រោយ
         </button>
       </div>
     </div>
