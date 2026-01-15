@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-
-// Icons
+import { motion } from 'framer-motion';
 import { 
   Loader2, 
   CheckCircle2, 
   ArrowRight, 
-  BookOpen, 
   PartyPopper, 
   ShieldCheck, 
   AlertCircle 
@@ -17,7 +14,7 @@ const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // ១. ទទួលទិន្នន័យមេរៀន
+  // ១. ទទួលទិន្នន័យមេរៀន និងព័ត៌មានអ្នកប្រើប្រាស់
   const course = location.state?.selectedCourse || { 
     title: "មេរៀនពិសេស", 
     price: 0.01 
@@ -32,24 +29,25 @@ const Checkout = () => {
   const [isPaid, setIsPaid] = useState(false);
   const [error, setError] = useState(null);
 
-  // ប្ដូរទៅកាន់ Link Render របស់អ្នក
+  // អាសយដ្ឋាន Backend (Render) - ប្រាកដថាគ្មានសញ្ញា / នៅខាងចុង
   const BACKEND_URL = "https://ak-digital-hub.onrender.com";
 
-  // ២. ទាញយក QR Code ពី Render Backend
+  // ២. ទាញយក QR Code
   useEffect(() => {
     const fetchQR = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // ហៅទៅកាន់ Endpoint /api/generate-qr
         const res = await fetch(`${BACKEND_URL}/api/generate-qr?amount=${course.price}`);
         
         if (!res.ok) throw new Error("មិនអាចបង្កើត QR បានទេ");
         
         const data = await res.json();
-        setQrString(data.qr_string); // នេះគឺជា string វែងៗរបស់ Bakong
-        setPaymentHash(data.md5);    // ប្រើសម្រាប់ឆែកស្ថានភាពបង់ប្រាក់
+        if (data.qr_string && data.md5) {
+          setQrString(data.qr_string);
+          setPaymentHash(data.md5);
+        }
       } catch (err) {
         setError("មានបញ្ហាក្នុងការភ្ជាប់ទៅកាន់ Server");
         console.error("Fetch QR Error:", err);
@@ -58,21 +56,22 @@ const Checkout = () => {
       }
     };
 
-    if (course.price) {
-      fetchQR();
-    }
-  }, [course.price, BACKEND_URL]);
+    if (course.price) fetchQR();
+  }, [course.price]);
 
-  // ៣. ឆែកស្ថានភាពបង់ប្រាក់ (Polling) រាល់ ៥ វិនាទីម្ដង
+  // ៣. ឆែកស្ថានភាពបង់ប្រាក់ (Polling)
   useEffect(() => {
-    if (!paymentHash || isPaid) return;
+    // បន្ថែមការ Check ឱ្យបានច្បាស់លាស់ ដើម្បីការពារ Error 404 (undefined)
+    if (!paymentHash || paymentHash === "undefined" || isPaid) return;
 
     const interval = setInterval(async () => {
       try {
         const res = await fetch(`${BACKEND_URL}/api/check-status/${paymentHash}`);
+        
+        if (res.status === 404) return; // បើរកមិនឃើញ Hash កុំទាន់ធ្វើអ្វី
+
         const data = await res.json();
         
-        // ប្រសិនបើ Backend បោះមកថា "PAID" ឬ status ជោគជ័យ
         if (data.status === "PAID" || data.status?.responseCode === "000") {
           clearInterval(interval);
           handlePaymentSuccess();
@@ -80,15 +79,15 @@ const Checkout = () => {
       } catch (err) {
         console.log("កំពុងរង់ចាំការបង់ប្រាក់...");
       }
-    }, 5000);
+    }, 5000); // ឆែករាល់ ៥ វិនាទី
 
     return () => clearInterval(interval);
-  }, [paymentHash, isPaid, BACKEND_URL]);
+  }, [paymentHash, isPaid]);
 
   // ៤. Logic នៅពេលបង់លុយជោគជ័យ
   const handlePaymentSuccess = async () => {
     try {
-      // បញ្ជូនទិន្នន័យទៅ Update ក្នុង Google Sheet តាមរយៈ Backend
+      // ផ្ញើទិន្នន័យទៅ Google Sheet តាមរយៈ Backend
       await fetch(`${BACKEND_URL}/api/update-payment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,7 +98,7 @@ const Checkout = () => {
         })
       });
 
-      // Update ព័ត៌មានក្នុងម៉ាស៊ីនសិស្ស (LocalStorage)
+      // Update LocalStorage ភ្លាមៗ
       const updatedUser = { 
         ...user, 
         payment: 'Paid', 
@@ -114,7 +113,7 @@ const Checkout = () => {
     }
   };
 
-  // --- UI: បង់ប្រាក់ជោគជ័យ ---
+  // --- UI បង់ប្រាក់ជោគជ័យ ---
   if (isPaid) {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6 font-khmer">
@@ -128,10 +127,9 @@ const Checkout = () => {
           </div>
           <h2 className="text-3xl font-black text-slate-900 mb-2">ជោគជ័យ!</h2>
           <p className="text-slate-500 mb-8">ការបង់ប្រាក់ត្រូវបានបញ្ជាក់រួចរាល់។</p>
-          
           <button 
             onClick={() => navigate('/profile')}
-            className="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all"
+            className="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg"
           >
             ចូលរៀនឥឡូវនេះ <ArrowRight size={20} />
           </button>
@@ -141,12 +139,11 @@ const Checkout = () => {
     );
   }
 
-  // --- UI: ទំព័រស្កេន QR Code ---
+  // --- UI ទំព័រស្កេន QR Code ---
   return (
     <div className="min-h-screen bg-[#020617] text-white flex items-center justify-center p-6 font-khmer">
       <div className="max-w-md w-full">
         <div className="bg-slate-900/50 backdrop-blur-xl rounded-[3rem] p-8 border border-slate-800 shadow-2xl text-center">
-          
           <div className="inline-flex items-center gap-2 text-amber-500 bg-amber-500/10 py-2 px-5 rounded-full mb-8 border border-amber-500/20 text-xs font-bold uppercase tracking-widest">
             <ShieldCheck size={14} /> Secure KHQR Payment
           </div>
@@ -154,12 +151,11 @@ const Checkout = () => {
           <h2 className="text-2xl font-black mb-1 uppercase">Scan to Pay</h2>
           <p className="text-slate-400 text-sm mb-10">{course.title}</p>
 
-          {/* QR Code Section */}
           <div className="bg-white p-6 rounded-[2.5rem] inline-block mb-10 shadow-2xl">
             {loading ? (
               <div className="w-60 h-60 flex flex-col items-center justify-center text-slate-900 gap-4">
                 <Loader2 className="animate-spin text-amber-500" size={40} />
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Generating Secure QR...</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Generating QR...</span>
               </div>
             ) : error ? (
               <div className="w-60 h-60 flex flex-col items-center justify-center text-red-500 p-6">
@@ -171,7 +167,6 @@ const Checkout = () => {
               <motion.img 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                // បំប្លែង qrString ទៅជារូបភាព QR Code តាមរយៈ api.qrserver.com
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrString)}`} 
                 alt="Bakong KHQR" 
                 className="w-60 h-60"
@@ -179,7 +174,6 @@ const Checkout = () => {
             )}
           </div>
 
-          {/* Amount Box */}
           <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 flex items-center justify-between mb-8">
             <div className="text-left">
               <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">ទឹកប្រាក់ត្រូវបង់</p>
