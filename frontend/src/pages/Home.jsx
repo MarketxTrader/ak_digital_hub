@@ -80,18 +80,26 @@ const Home = () => {
             transition={{ delay: 0.5 }}
             className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full max-w-[320px] sm:max-w-none px-6"
           >
-            <button className="w-full sm:w-auto bg-amber-500 text-slate-950 font-black px-10 py-5 rounded-full flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all text-xs sm:text-sm uppercase tracking-widest">
+            <button onClick={() => window.open('services')} className="w-full sm:w-auto bg-amber-500 text-slate-950 font-black px-10 py-5 rounded-full flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all text-xs sm:text-sm uppercase tracking-widest">
               ចាប់ផ្តើមឥឡូវនេះ <ArrowRight size={18} />
             </button>
-            <button className="w-full sm:w-auto bg-white/5 border border-white/10 text-white font-black px-10 py-5 rounded-full flex items-center justify-center gap-3 hover:bg-white/10 transition-all backdrop-blur-md active:scale-95 text-xs sm:text-sm uppercase tracking-widest">
-              <PlayCircle size={18} className="text-amber-500" /> សមិទ្ធផលការងារ
-            </button>
+
+            <a
+              href="https://t.me/vathana_trader"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto bg-white/5 border border-white/10 text-white font-black px-10 py-5 rounded-full flex items-center justify-center gap-3 hover:bg-white/10 transition-all backdrop-blur-md active:scale-95 text-xs sm:text-sm uppercase tracking-widest"
+            >
+              <PlayCircle size={18} className="text-amber-500" />
+              ទំនាក់ទំនងយើង
+            </a>
           </motion.div>
+
         </div>
       </section>
 
       {/* ២. SERVICES SECTION - Cards with Animated Button */}
-      <section className="py-20 sm:py-32 px-4 sm:px-6 relative">
+      <section className="py-20 sm:py-32 px-4 sm:px-6 relative" id ="services">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 sm:mb-24">
             <motion.span {...fadeInUp} className="text-amber-500 font-black text-[10px] uppercase tracking-[0.4em] block mb-4">What We Offer</motion.span>

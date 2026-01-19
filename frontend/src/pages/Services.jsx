@@ -1,25 +1,46 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // បន្ថែម motion សម្រាប់ animation
+import { motion } from 'framer-motion';
 import { services } from '../data/mockData';
-import { CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
+// ១. ត្រូវប្រាកដថាបាន Import Icon ទាំងនេះពី lucide-react
+import { 
+  CheckCircle2, 
+  ArrowRight, 
+  Sparkles, 
+  Info, 
+  Layout, 
+  Palette, 
+  Megaphone 
+} from 'lucide-react';
 
 const Services = () => {
   const navigate = useNavigate();
 
-  const handleOrder = (service) => {
-    const priceValue = typeof service.price === 'string' 
-      ? parseFloat(service.price.replace(/[^0-9.]/g, '')) 
-      : service.price;
+  // ២. បង្កើត Object សម្រាប់ផ្គូផ្គងឈ្មោះ Icon (String) ទៅនឹង Component ពិតប្រាកដ
+  const iconMap = {
+    Layout: Layout,
+    Palette: Palette,
+    Megaphone: Megaphone
+  };
 
+  const getNumericPrice = (price) => {
+    if (typeof price === 'number') return price;
+    return parseFloat(String(price).replace(/[^0-9.]/g, '')) || 0;
+  };
+
+  const handleOrder = (service) => {
     navigate('/checkout', { 
       state: { 
         selectedCourse: {
           title: service.title,
-          price: priceValue || 0,
+          price: getNumericPrice(service.price),
         } 
       } 
     });
+  };
+
+  const handleViewDetail = (id) => {
+    navigate(`/service/${id}`);
   };
 
   return (
@@ -50,7 +71,8 @@ const Services = () => {
         {/* Services Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {services.map((service, index) => {
-            const Icon = service.icon; 
+            // ៣. កែប្រែត្រង់នេះ៖ ទាញយក Component ពី iconMap តាមរយៈឈ្មោះ String ក្នុង data
+            const IconComponent = iconMap[service.icon] || Layout; 
 
             return (
               <motion.div 
@@ -60,12 +82,12 @@ const Services = () => {
                 transition={{ delay: index * 0.1 }}
                 className="glass-card bg-slate-900/40 border border-white/5 p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] hover:border-amber-500/30 transition-all group relative overflow-hidden"
               >
-                {/* Decorative Element */}
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-colors"></div>
 
                 <div className="flex flex-col sm:flex-row items-start gap-6 mb-8">
                   <div className="w-16 h-16 bg-gradient-to-br from-amber-500/20 to-orange-500/10 rounded-2xl sm:rounded-3xl flex items-center justify-center text-amber-500 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 border border-amber-500/20 shadow-inner">
-                    <Icon size={30} /> 
+                    {/* ៤. បង្ហាញ Icon ដែលជា Component ត្រឹមត្រូវ */}
+                    <IconComponent size={30} /> 
                   </div>
                   <div className="flex-grow">
                     <h3 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2 tracking-tight group-hover:text-amber-500 transition-colors">
@@ -82,17 +104,27 @@ const Services = () => {
                   {service.desc}
                 </p>
 
-                <div className="flex flex-col sm:flex-row items-center justify-between bg-slate-950/80 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2.5rem] border border-white/5 gap-6">
-                  <div className="text-center sm:text-left">
-                    <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 block">តម្លៃចាប់ផ្តើម</span>
-                    <span className="text-white font-black text-3xl sm:text-4xl tracking-tighter">
-                      {typeof service.price === 'number' ? `$${service.price.toFixed(2)}` : service.price}
-                    </span>
+                <div className="flex flex-col space-y-4 bg-slate-950/80 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2.5rem] border border-white/5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-left">
+                      <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 block">តម្លៃចាប់ផ្តើម</span>
+                      <span className="text-white font-black text-3xl sm:text-4xl tracking-tighter">
+                        {typeof service.price === 'number' ? `$${service.price.toFixed(2)}` : service.price}
+                      </span>
+                    </div>
+                    
+                    <button 
+                      onClick={() => handleViewDetail(service.id)}
+                      className="flex items-center gap-2 text-slate-400 hover:text-amber-500 transition-colors text-[10px] font-black uppercase tracking-widest group/detail"
+                    >
+                      <Info size={16} /> មើលលម្អិត
+                      <ArrowRight size={14} className="group-hover/detail:translate-x-1 transition-transform" />
+                    </button>
                   </div>
                   
                   <button 
                     onClick={() => handleOrder(service)}
-                    className="w-full sm:w-auto bg-amber-500 text-slate-950 px-8 py-4 sm:py-5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-amber-500/20 group/btn"
+                    className="w-full bg-amber-500 text-slate-950 py-4 sm:py-5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-amber-500/20 group/btn"
                   >
                     កក់សេវាកម្មឥឡូវនេះ 
                     <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
