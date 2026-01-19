@@ -109,7 +109,7 @@ const Footer = () => {
         {/* បន្ទាត់ខាងក្រោមគេបង្អស់ */}
         <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-slate-500 text-[11px] font-bold uppercase tracking-[0.2em]">
-            © 2024 <span className="text-white font-black">AK DIGITAL HUB</span>. All rights reserved.
+            © 2026 <span className="text-white font-black">AK DIGITAL HUB</span>. All rights reserved.
           </p>
           <div className="flex gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-500">
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>

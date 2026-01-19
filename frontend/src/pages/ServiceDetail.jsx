@@ -68,14 +68,19 @@ const ServiceDetail = () => {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-amber-500/5 blur-[120px] rounded-full -z-10" />
         
         <div className="max-w-6xl mx-auto">
-          <motion.button 
+            <motion.button 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             onClick={() => navigate(-1)}
-            className="group flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-12 uppercase text-[10px] font-black tracking-[0.2em]"
-          >
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Services
-          </motion.button>
+            className=" group inline-flex items-center gap-2 px-6 py-3 border border-amber-500/60 rounded-full text-amber-500 hover:text-slate-950 hover:bg-amber-500 transition-all mb-12 uppercase text-[10px] font-black tracking-[0.2em] active:scale-95"
+            >
+            <ArrowLeft 
+                size={16} 
+                className="group-hover:-translate-x-1 transition-transform" 
+            /> 
+            Back to Services
+            </motion.button>
+
 
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
             <motion.div 
@@ -155,7 +160,7 @@ const ServiceDetail = () => {
                         {...fadeInUp}
                         className="flex items-center gap-6 p-6 rounded-[2rem] border border-white/5 bg-slate-900/40 hover:bg-amber-500/5 transition-all group"
                       >
-                        <div className="text-4xl font-black text-white/5 group-hover:text-amber-500/10 transition-colors italic w-12 text-center">
+                        <div className="text-4xl font-black text-amber-500 group-hover:text-amber-500/10 transition-colors italic w-12 text-center">
                           0{index + 1}
                         </div>
                         <div className="h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
@@ -270,7 +275,7 @@ const ServiceDetail = () => {
       </section>
 
       <footer className="py-10 text-center border-t border-white/5 opacity-20 text-[10px] uppercase tracking-[0.5em] font-black px-4 italic">
-        © 2024 AK DIGITAL HUB • Premium Quality Services
+        © 2026 AK DIGITAL HUB • Premium Quality Services
       </footer>
     </div>
   );
