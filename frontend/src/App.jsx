@@ -71,7 +71,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />
-          <Route path="/service" element={<Services />} />
+          <Route path="/Services" element={<Services />} />
           <Route path="/trading" element={<TradingHub />} />
           
           {/* បោះ handleAuthChange ទៅឱ្យ Login Pages */}

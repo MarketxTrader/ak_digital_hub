@@ -63,7 +63,7 @@ export const tradingCourses = [
   {
     id: 't1',
     title: "Basic Forex Trading",
-    price: 1.99,
+    price: 0.00,
     category: "Basic",
     desc: "យល់ដឹងពីមូលដ្ឋានគ្រឹះនៃទីផ្សារ Forex សម្រាប់អ្នកចាប់ផ្ដើមដំបូង។",
     level: "Free"

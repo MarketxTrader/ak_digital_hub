@@ -1,11 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Moul&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* លុបស្ទីលចាស់ៗដែលមកជាមួយ Vite ចោលឱ្យអស់ */
 :root {
   line-height: 1.5;
   font-weight: 400;
+  /* កំណត់ Font ខ្មែរជា Default សម្រាប់ទំព័រទាំងមូល */
+  font-family: "Kantumruy Pro", sans-serif;
 }
 
 body {
@@ -13,65 +16,51 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  /* ដាច់ខាតមិនត្រូវមាន display: flex; ឬ place-items: center; ឡើយ */
+  background-color: #020617; /* ពណ៌ផ្ទៃក្រោយ Dark Mode */
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
-  display: block; /* ធានាថាវាដើរពេញទទឹងអេក្រង់ */
+  display: block;
+}
+
+/* ស្ទីលសម្រាប់ចំណងជើងខ្មែរែបែបបុរាណ (ដូចអក្សរឆ្លាក់) */
+.font-moul {
+  font-family: "Moul", serif;
+}
+
+/* បើអ្នកចង់ឱ្យ Class font-khmer ដើរជាមួយ Kantumruy Pro */
+.font-khmer {
+  font-family: "Kantumruy Pro", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Kantumruy Pro", sans-serif;
+  font-weight: 700;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #fbbf24; /* ពណ៌ Amber */
   text-decoration: inherit;
+  transition: color 0.3s;
 }
+
 a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  color: #f59e0b;
 }
 
 button {
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.25s;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+/* លុបស្ទីលចាស់ដែលធ្វើឱ្យ Body ក្លាយជា Flex នាំឱ្យខូច Layout */
+/* body { display: flex; place-items: center; } <--- លុបចេញរួចរាល់ */
