@@ -1,53 +1,70 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Clock, BarChart } from 'lucide-react';
+import { BookOpen, Clock, BarChart, ArrowRight } from 'lucide-react';
 
 const CourseCard = ({ course }) => {
   const navigate = useNavigate();
 
   const handleEnroll = () => {
-    // បញ្ជូនទៅកាន់ទំព័រ Checkout ជាមួយទិន្នន័យ Course
     navigate('/checkout', { state: { course: course } });
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300 group">
-      {/* Course Image */}
-      <div className="relative h-48 overflow-hidden">
+    <div className="glass-card rounded-[2.5rem] overflow-hidden hover:border-amber-500/50 transition-all duration-500 group flex flex-col h-full relative">
+      
+      {/* ១. ផ្នែករូបភាព (Course Image) */}
+      <div className="relative h-56 overflow-hidden">
         <img 
           src={course.image || 'https://via.placeholder.com/400x250'} 
           alt={course.title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         />
-        <div className="absolute top-4 left-4 bg-amber-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">
+        {/* Overlay ងងឹតបន្តិចលើរូបភាព */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent opacity-60"></div>
+        
+        {/* Category Badge */}
+        <div className="absolute top-5 left-5 bg-amber-500 text-slate-950 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
           {course.category || 'Popular'}
         </div>
       </div>
 
-      {/* Course Content */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-1">{course.title}</h3>
-        <p className="text-slate-600 text-sm mb-4 line-clamp-2">{course.desc}</p>
+      {/* ២. ខ្លឹមសារ (Course Content) */}
+      <div className="p-8 flex flex-col flex-grow">
+        <h3 className="text-2xl font-black text-white mb-3 line-clamp-1 group-hover:text-amber-500 transition-colors">
+          {course.title}
+        </h3>
+        <p className="text-slate-400 text-sm mb-6 line-clamp-2 leading-relaxed font-khmer">
+          {course.desc}
+        </p>
         
-        <div className="flex items-center justify-between text-slate-500 text-xs mb-6 border-y border-slate-50 py-3">
-          <div className="flex items-center gap-1">
-            <Clock size={14} /> {course.duration || '10 Weeks'}
+        {/* ព័ត៌មានលម្អិត (Stats) */}
+        <div className="grid grid-cols-3 gap-2 py-4 border-y border-white/5 mb-6">
+          <div className="flex flex-col items-center gap-1 border-r border-white/5">
+            <Clock size={14} className="text-amber-500" />
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">{course.duration || '10 Weeks'}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <BookOpen size={14} /> {course.lessons || '24 Lessons'}
+          <div className="flex flex-col items-center gap-1 border-r border-white/5">
+            <BookOpen size={14} className="text-amber-500" />
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">{course.lessons || '24 Lessons'}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <BarChart size={14} /> {course.level || 'Beginner'}
+          <div className="flex flex-col items-center gap-1">
+            <BarChart size={14} className="text-amber-500" />
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">{course.level || 'Beginner'}</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <span className="text-2xl font-black text-slate-900">${course.price}</span>
+        {/* ៣. តម្លៃ និងប៊ូតុង (Price & Action) */}
+        <div className="mt-auto flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Price</span>
+            <span className="text-3xl font-black text-white">${course.price}</span>
+          </div>
+          
           <button 
             onClick={handleEnroll}
-            className="bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-amber-500 hover:text-slate-900 transition-colors duration-300"
+            className="flex items-center gap-2 bg-white/5 hover:bg-amber-500 text-white hover:text-slate-900 px-6 py-3 rounded-2xl font-black transition-all duration-300 border border-white/10 hover:border-amber-500 active:scale-95 group/btn shadow-xl"
           >
-            Enroll Now
+            Enroll <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
           </button>
         </div>
       </div>
