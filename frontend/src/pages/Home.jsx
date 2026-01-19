@@ -18,12 +18,12 @@ import {
   MousePointer2,
   Menu
 } from 'lucide-react';
-import { services, courses } from '../data/mockData';
+import { services } from '../data/mockData';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  // Map Icon ឈ្មោះអក្សរទៅជា Component
+  // ១. បង្កើត Icon Map ដើម្បីផ្គូផ្គងឈ្មោះ String ពី Data ទៅជា Component
   const iconMap = {
     Layout: Layout,
     Palette: Palette,
@@ -40,7 +40,7 @@ const Home = () => {
   return (
     <div className="bg-[#020617] text-white font-khmer overflow-hidden selection:bg-amber-500 selection:text-slate-950">
       
-      {/* ១. HERO SECTION - Mobile Responsive Optimized */}
+      {/* ១. HERO SECTION */}
       <section className="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-4 sm:px-6">
         <div className="absolute inset-0 bg-grid opacity-[0.15] -z-10" />
         <div className="absolute top-[15%] left-[-10%] w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-amber-500/10 rounded-full blur-[80px] sm:blur-[130px] pointer-events-none -z-10" />
@@ -60,7 +60,7 @@ const Home = () => {
             className="text-5xl sm:text-7xl md:text-[5.5rem] font-black mb-8 tracking-tighter leading-[1.1] uppercase italic"
           >
             ពង្រីកអាជីវកម្មជាមួយ <br />
-            <span className="text-gradient-amber drop-shadow-[0_0_25px_rgba(245,158,11,0.3)]">
+            <span className="text-gradient-amber drop-shadow-[0_0_25px_rgba(245,158,11,0.3)] text-amber-500">
               សេវាកម្ម Digital បែបទំនើប
             </span>
           </motion.h1>
@@ -80,7 +80,10 @@ const Home = () => {
             transition={{ delay: 0.5 }}
             className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full max-w-[320px] sm:max-w-none px-6"
           >
-            <button onClick={() => window.open('services')} className="w-full sm:w-auto bg-amber-500 text-slate-950 font-black px-10 py-5 rounded-full flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all text-xs sm:text-sm uppercase tracking-widest">
+            <button 
+              onClick={() => navigate('/services')} 
+              className="w-full sm:w-auto bg-amber-500 text-slate-950 font-black px-10 py-5 rounded-full flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all text-xs sm:text-sm uppercase tracking-widest"
+            >
               ចាប់ផ្តើមឥឡូវនេះ <ArrowRight size={18} />
             </button>
 
@@ -94,12 +97,11 @@ const Home = () => {
               ទំនាក់ទំនងយើង
             </a>
           </motion.div>
-
         </div>
       </section>
 
-      {/* ២. SERVICES SECTION - Cards with Animated Button */}
-      <section className="py-20 sm:py-32 px-4 sm:px-6 relative" id ="services">
+      {/* ២. SERVICES SECTION */}
+      <section className="py-20 sm:py-32 px-4 sm:px-6 relative" id="services">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 sm:mb-24">
             <motion.span {...fadeInUp} className="text-amber-500 font-black text-[10px] uppercase tracking-[0.4em] block mb-4">What We Offer</motion.span>
@@ -110,7 +112,9 @@ const Home = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
             {services?.map((service, idx) => {
-              const Icon = iconMap[service.icon] || Layout;
+              // ២. ទាញយក Component ត្រឹមត្រូវពី iconMap
+              const IconComponent = iconMap[service.icon] || Layout;
+              
               return (
                 <motion.div 
                   key={service.id}
@@ -120,18 +124,17 @@ const Home = () => {
                   transition={{ delay: idx * 0.1 }}
                   className="group bg-[#0b1121] p-8 sm:p-12 rounded-[2.5rem] border border-white/5 relative flex flex-col justify-between hover:border-amber-500/30 transition-all duration-500"
                 >
-                  {/* Background Glow on Hover */}
                   <div className="absolute inset-0 bg-amber-500/5 opacity-0 group-hover:opacity-100 rounded-[2.5rem] transition-opacity duration-500 pointer-events-none" />
 
                   <div>
                     <div className="w-16 h-16 sm:w-20 sm:h-20 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 mb-8 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all duration-500 shadow-lg">
-                      <Icon size={32} />
+                      <IconComponent size={32} />
                     </div>
                     <h3 className="text-xl sm:text-2xl font-black mb-4 uppercase italic group-hover:text-amber-500 transition-colors">
                       {service.title}
                     </h3>
                     <p className="text-slate-400 mb-8 text-xs sm:text-sm leading-relaxed font-light">
-                      {service.description}
+                      {service.desc} {/* ប្តូរ description មក desc វិញតាម mockData */}
                     </p>
                     
                     <ul className="space-y-3 mb-10">
@@ -143,16 +146,16 @@ const Home = () => {
                     </ul>
                   </div>
 
-                  {/* ប៊ូតុង View Service ដែលតភ្ជាប់ទៅ Page លម្អិត */}
+                  {/* ៣. ប្តូរ Link ទៅកាន់ /service/:id ឱ្យត្រូវនឹង App.jsx */}
                   <button 
-                      onClick={() => {
-                        navigate(`/services/${service.id}`);
-                        window.scrollTo(0, 0); // បន្ថែមឱ្យវាឡើងលើបំផុតពេលប្តូរ Page
-                      }}
-                      className="mt-auto w-full py-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center gap-2 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] group-hover:bg-amber-500 group-hover:text-slate-950 group-hover:border-amber-500 transition-all duration-300 shadow-md active:scale-[0.98]"
-                    >
-                      View Service <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    onClick={() => {
+                      navigate(`/service/${service.id}`);
+                      window.scrollTo(0, 0);
+                    }}
+                    className="mt-auto w-full py-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center gap-2 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] group-hover:bg-amber-500 group-hover:text-slate-950 group-hover:border-amber-500 transition-all duration-300 shadow-md active:scale-[0.98]"
+                  >
+                    View Service <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
                 </motion.div>
               );
             })}
@@ -170,18 +173,18 @@ const Home = () => {
             { label: 'Security Guarante', value: '100%' },
           ].map((stat, i) => (
             <motion.div 
-                key={i} 
-                whileHover={{ y: -5, scale: 1.05 }} // បន្ថែមចលនានៅពេលដាក់ Mouse លើ
-                className="text-center cursor-default group"
-              >
-                <div className="text-3xl sm:text-5xl font-black mb-2 italic text-amber-500 tracking-tighter group-hover:drop-shadow-[0_0_15px_rgba(245,158,11,0.5)] transition-all">
-                  {stat.value}
-                </div>
-                <div className="text-[8px] sm:text-[10px] text-slate-500 uppercase tracking-[0.2em] font-black group-hover:text-slate-300 transition-colors">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
+              key={i} 
+              whileHover={{ y: -5, scale: 1.05 }}
+              className="text-center cursor-default group"
+            >
+              <div className="text-3xl sm:text-5xl font-black mb-2 italic text-amber-500 tracking-tighter group-hover:drop-shadow-[0_0_15px_rgba(245,158,11,0.5)] transition-all">
+                {stat.value}
+              </div>
+              <div className="text-[8px] sm:text-[10px] text-slate-500 uppercase tracking-[0.2em] font-black group-hover:text-slate-300 transition-colors">
+                {stat.label}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -190,11 +193,9 @@ const Home = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          className="max-w-6xl mx-auto bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-[2.5rem] sm:rounded-[4rem] p-10 sm:p-24 text-center relative overflow-hidden shadow-2xl"
+          className="max-w-6xl mx-auto bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-[2.5rem] sm:rounded-[4rem] text-center relative overflow-hidden shadow-2xl"
         >
           <div className="relative py-24 sm:py-32 md:py-40 overflow-hidden">
-  
-            {/* Blur background */}
             <div className="absolute bottom-0 left-0 w-32 h-25 sm:w-64 sm:h-64 bg-amber-500/10 blur-[50px] sm:blur-[100px] rounded-full" />
 
             <div className="relative z-10 text-center px-4">
@@ -216,19 +217,21 @@ const Home = () => {
                   Contact Expert
                 </button>
 
-                <button className="w-full sm:w-auto bg-white/5 border border-white/10 text-white font-black px-10 sm:px-14 py-5 rounded-full hover:bg-white/10 transition-all uppercase tracking-[0.2em] text-[10px] sm:text-xs backdrop-blur-md active:scale-95">
+                <button 
+                  onClick={() => navigate('/services')}
+                  className="w-full sm:w-auto bg-white/5 border border-white/10 text-white font-black px-10 sm:px-14 py-5 rounded-full hover:bg-white/10 transition-all uppercase tracking-[0.2em] text-[10px] sm:text-xs backdrop-blur-md active:scale-95"
+                >
                   Learn More
                 </button>
               </div>
             </div>
           </div>
-
         </motion.div>
       </section>
 
       {/* FOOTER */}
       <footer className="py-10 text-center opacity-30 text-[8px] sm:text-[10px] uppercase tracking-[0.5em] font-black px-4 border-t border-white/5">
-        © 2024 AK DIGITAL HUB • Premium Digital Agency • Infinite Innovation
+        © 2026 AK DIGITAL HUB • Premium Digital Agency • Infinite Innovation
       </footer>
     </div>
   );
