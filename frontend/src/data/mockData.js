@@ -3,6 +3,9 @@ import {
   Video, Music, Wand2, Layers, Cpu, PlayCircle
 } from 'lucide-react';
 import courseImg1 from '../assets/Forex.jpg';
+import bannerImg1 from '../assets/Banner/1.jpg';
+import bannerImg2 from '../assets/Banner/2.jpg';
+import bannerImg3 from '../assets/Banner/3.jpg';
 
 // ១. វគ្គសិក្សាទូទៅ
 export const courses = [
@@ -158,5 +161,32 @@ export const tradingCourses = [
     category: "Professional",
     desc: "បច្ចេកទេសវាយឆ្មក់យកប្រាក់ចំណេញលើមាស (XAUUSD) ក្នុងរយៈពេលខ្លីបែបអាជីព។",
     level: "Professional"
+  }
+];
+
+export const banners = [
+  {
+    id: 1,
+    title: "បង្កើតភាពជោគជ័យ",
+    titleAccent: "លើសពីការរំពឹង",
+    desc: "យើងនាំយកបច្ចេកវិទ្យាទំនើបបំផុត ដើម្បីជំរុញអាជីវកម្មអ្នកឲ្យលេចធ្លោ និងឈានមុខគូប្រកួត។",
+    image: bannerImg1,
+    tag: "Premium Experience"
+  },
+  {
+    id: 2,
+    title: "យុទ្ធសាស្ត្រឌីជីថល",
+    titleAccent: "បង្កើនការលក់",
+    desc: "បម្លែងគំនិតជាលទ្ធផលពិត ជាមួយយុទ្ធសាស្ត្រដែលបង្កើតដោយអ្នកជំនាញឌីជីថលជាន់ខ្ពស់។",
+    image: bannerImg2,
+    tag: "Digital Growth"
+  },
+  {
+    id: 3,
+    title: "រចនា Website",
+    titleAccent: "ទាក់ទាញ & មានប្រសិទ្ធភាព",
+    desc: "បង្កើតចំណាប់អារម្មណ៍ដំបូងដ៏ខ្លាំង និងបំលែងអ្នកទស្សនាជាអតិថិជនពិតប្រាកដ។",
+    image: bannerImg3,
+    tag: "Next-Gen Design"
   }
 ];

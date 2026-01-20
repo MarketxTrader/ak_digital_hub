@@ -56,7 +56,7 @@ const Services = () => {
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-full text-amber-500 text-[10px] font-black tracking-[0.2em] uppercase mb-4"
+            className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-full text-amber-500 text-[10px] font-black tracking-[0.2em] uppercase mb-4 "
           >
             <Sparkles size={14} /> Our Specialized Solutions
           </motion.div>
@@ -112,21 +112,12 @@ const Services = () => {
                         {typeof service.price === 'number' ? `$${service.price.toFixed(2)}` : service.price}
                       </span>
                     </div>
-                    
-                    <button 
-                      onClick={() => handleViewDetail(service.id)}
-                      className="flex items-center gap-2 text-slate-400 hover:text-amber-500 transition-colors text-[10px] font-black uppercase tracking-widest group/detail"
-                    >
-                      <Info size={16} /> មើលលម្អិត
-                      <ArrowRight size={14} className="group-hover/detail:translate-x-1 transition-transform" />
-                    </button>
                   </div>
-                  
                   <button 
-                    onClick={() => handleOrder(service)}
-                    className="w-full bg-amber-500 text-slate-950 py-4 sm:py-5 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-amber-500/20 group/btn"
+                    onClick={() =>  handleViewDetail(service.id)}
+                    className="w-full text-amber-500 border-amber-800/40 bg-transparent px-6 py-4 sm:py-5 rounded-full font-black text-xs uppercase tracking-[0.1em] flex items-center justify-center gap-3 hover:bg-amber-500 hover:text-slate-950 active:scale-95 transition-all group/btn"
                   >
-                    កក់សេវាកម្មឥឡូវនេះ 
+                    មើលព័ត៌មានលម្អិត
                     <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                   </button>
                 </div>

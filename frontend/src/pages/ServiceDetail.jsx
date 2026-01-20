@@ -235,7 +235,7 @@ const ServiceDetail = () => {
                   <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 blur-[60px] rounded-full pointer-events-none" />
                   
                   <h4 className="text-2xl font-black uppercase italic mb-8 leading-tight relative z-10">
-                    តើអ្នកត្រៀមខ្លួន <br /> <span className="text-amber-500 italic">ឈ្នះលើទីផ្សារ?</span>
+                    • ចាប់ផ្តើមឥឡូវនេះ <br /> • ពិភាក្សាជាមួយអ្នកជំនាញ <br /><span className="text-amber-500 italic">• បង្កើតជោគជ័យជាមួយគ្នា </span>
                   </h4>
                   
                   <div className="space-y-6 mb-12 relative z-10 text-slate-300">
@@ -245,7 +245,7 @@ const ServiceDetail = () => {
                       </div>
                       <div>
                         <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest leading-none mb-1">Timeline</p>
-                        <p className="text-sm font-bold italic uppercase">១ - ២ សប្តាហ៍</p>
+                        <p className="text-sm font-bold italic uppercase">២ - ៣ សប្តាហ៍</p>
                       </div>
                     </div>
 
