@@ -69,7 +69,8 @@ const Services = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8​​ ">
           {services.map((service, index) => {
             // ៣. កែប្រែត្រង់នេះ៖ ទាញយក Component ពី iconMap តាមរយៈឈ្មោះ String ក្នុង data
             const IconComponent = iconMap[service.icon] || Layout; 
@@ -80,11 +81,11 @@ const Services = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="glass-card bg-slate-900/40 border border-white/5 p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] hover:border-amber-500/30 transition-all group relative overflow-hidden"
+                className="relative rounded-[2rem] sm:rounded-[3rem] border-[3px] border-dashed border-amber-500 p-[3px]"
               >
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-colors"></div>
+                <div className="glass-card bg-slate-900/40 p-8 rounded-[2rem] sm:rounded-[3rem] transition-all group relative overflow-hidden ">
 
-                <div className="flex flex-col sm:flex-row items-start gap-6 mb-8">
+                <div className="flex flex-col sm:flex-row items-start gap-6 mb-8 ">
                   <div className="w-16 h-16 bg-gradient-to-br from-amber-500/20 to-orange-500/10 rounded-2xl sm:rounded-3xl flex items-center justify-center text-amber-500 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 border border-amber-500/20 shadow-inner">
                     {/* ៤. បង្ហាញ Icon ដែលជា Component ត្រឹមត្រូវ */}
                     <IconComponent size={30} /> 
@@ -98,6 +99,8 @@ const Services = () => {
                       <span className="text-[10px] uppercase font-black tracking-[0.2em]">Verified Excellence</span>
                     </div>
                   </div>
+                  
+                </div>
                 </div>
                 
                 <p className="text-slate-400 mb-10 leading-relaxed text-sm sm:text-base font-medium italic opacity-80 group-hover:opacity-100 transition-opacity">
@@ -107,10 +110,10 @@ const Services = () => {
                 <div className="flex flex-col space-y-4 bg-slate-950/80 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2.5rem] border border-white/5">
                   <div className="flex items-center justify-between mb-2">
                     <div className="text-left">
-                      <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 block">តម្លៃចាប់ផ្តើម</span>
-                      <span className="text-white font-black text-3xl sm:text-4xl tracking-tighter">
-                        {typeof service.price === 'number' ? `$${service.price.toFixed(2)}` : service.price}
-                      </span>
+                      <div className="flex items-center gap-2 text-white/80 mb-1">
+                      <CheckCircle2 size={14} />
+                      <span className="text-[15px] uppercase font-black tracking-[0.1em]">សូមមើលព័ត៌មានលម្អិតនៅខាងក្រោម</span>
+                    </div>
                     </div>
                   </div>
                   <button 

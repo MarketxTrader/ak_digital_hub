@@ -136,7 +136,7 @@ const Home = () => {
           <div className="text-center mb-12">
             <span className="text-amber-500 font-black text-[10px] uppercase tracking-[0.4em] block mb-3">Our Expertise</span>
             <h2 className="text-3xl sm:text-5xl font-black uppercase italic tracking-tighter leading-tight">
-              សេវាកម្ម <span className="text-slate-600">ឆ្នើម</span>
+              សេវាកម្ម <span className="text-amber-500">ពេញនិយមបំផុត</span>
             </h2>
           </div>
 
@@ -149,7 +149,7 @@ const Home = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   initial={{ opacity: 0, y: 20 }}
                   viewport={{ once: true }}
-                  className="bg-[#0b1121] p-8 rounded-[2rem] border border-white/5 flex flex-col"
+                  className="bg-[#0b1121] p-8 rounded-[2rem] border-[3px] border-dashed border-amber-500/50 hover:border-amber-400 hover:shadow-[0_0_25px_rgba(245,158,11,0.3)] transition-all duration-300 flex flex-col"
                 >
                   <div className="w-14 h-14 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 mb-6">
                     <IconComponent size={24} />
@@ -165,7 +165,11 @@ const Home = () => {
                     ))}
                   </div>
 
-                  <button className="mt-auto w-full py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-white active:bg-amber-500 active:text-slate-950 transition-all">
+                  <button 
+                    onClick={() => {
+                      navigate(`/service/${service.id}`);
+                      window.scrollTo(0, 0);
+                    }} className="mt-auto w-full py-4 bg-[#0b1121] p-8 rounded-[2rem] border-[3px] border-solid border-amber-500/50 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-white active:bg-amber-500 active:text-slate-950 transition-all">
                     View Details
                   </button>
                 </motion.div>
