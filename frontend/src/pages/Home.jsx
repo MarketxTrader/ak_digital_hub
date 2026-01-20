@@ -208,9 +208,9 @@ const Home = () => {
           className="max-w-6xl mx-auto bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-[2.5rem] md:rounded-[4rem] text-center relative overflow-hidden shadow-2xl"
         >
           <div className="py-20 md:py-32 px-6">
-            <h2 className="text-3xl sm:text-7xl font-black mb-10 tracking-tight italic uppercase leading-tight">
+            <h2 className="text-4xl sm:text-6xl md:text-7xl font-black mb-10 tracking-tight italic uppercase leading-[1.3]">
               តើអ្នកត្រៀមខ្លួន <br />
-              <span className="text-amber-500">ឈ្នះលើទីផ្សារ?</span>
+              <span className="block mt-4 sm:mt-6 text-amber-500">ឈ្នះលើទីផ្សារ?</span>
             </h2>
             <p className="text-slate-400 text-sm md:text-xl mb-14 max-w-2xl mx-auto font-light italic">
               កុំទុកឱ្យអាជីវកម្មរបស់អ្នកនៅពីក្រោយគេ។ ប្រើប្រាស់ថាមពលឌីជីថល ដើម្បីបង្កើនលទ្ធផលនៅថ្ងៃនេះ។
