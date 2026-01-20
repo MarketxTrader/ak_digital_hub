@@ -196,8 +196,10 @@ const Home = () => {
       <section className="py-16 px-6">
         <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-white/10 rounded-[2.5rem] p-10 text-center relative overflow-hidden">
           <h2 className="text-3xl font-black mb-6 italic uppercase leading-tight">
-            ត្រៀមខ្លួន <br /> <span className="text-amber-500 text-4xl">ជោគជ័យ?</span>
+            ពេលវេលាមកដល់ហើយ <br />
+            <span className="text-amber-500 text-4xl">សម្រាប់ជោគជ័យរបស់អ្នក</span>
           </h2>
+
           <p className="text-slate-400 text-xs mb-10 italic leading-relaxed">ចាប់ផ្តើមដំណើរការអាជីវកម្មឌីជីថលរបស់អ្នកជាមួយយើងថ្ងៃនេះ។</p>
           <button 
             onClick={() => window.open('https://t.me/vathana_trader')}
